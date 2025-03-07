@@ -8,6 +8,13 @@ import (
 	"syscall"
 )
 
+type todo struct {
+	id string
+	description string
+	createdAt string
+	isComplete string
+}
+
 func main() {
 	// Default task file path
 	var filePath string = "./list.csv"
