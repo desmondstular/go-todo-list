@@ -3,9 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+	"syscall"
 )
 
 func main() {
+	// Default task file path
+	var filePath string = "./list.csv"
+
 	// Get cmd line args
 	var args []string = os.Args[1:]
 
@@ -41,7 +45,7 @@ func hasNoArgs(args []string) error {
 
 
 func openFile(path string) (*os.File, error) {
-	fm, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file for reading")
@@ -60,4 +64,10 @@ func openFile(path string) (*os.File, error) {
 func closeFile(f *os.File) error {
 	syscall.Flock(int(f.Fd()), syscall.LOCK_UN)
 	return f.Close()
+}
+
+
+func addTask(desc, filepath string) error {
+	
+	return nil
 }
