@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"os"
+	// "strconv"
 	"syscall"
 )
 
@@ -15,13 +17,30 @@ func main() {
 
 	// Check if no args passed
 	if err := hasNoArgs(args); err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
+	}
+
+	// Try to read file and check if error reading
+	f, err := openFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	
+	// Defer file close
+	defer closeFile(f)
+
+	// Read data from csv
+	data, err := readCsv(f)
+	if err != nil {
+		panic(err)
 	}
 
 	switch args[0] {
 	case "add":
 		fmt.Println(args[0])
+		if err := addTask("test", data); err != nil {
+			panic(err)
+		}
 	case "list":
 		fmt.Println(args[0])
 	case "complete":
@@ -31,8 +50,6 @@ func main() {
 	default:
 		fmt.Println("Not a valid command:", args[0])
 	}
-
-	return
 }
 
 
@@ -44,8 +61,8 @@ func hasNoArgs(args []string) error {
 }
 
 
-func openFile(path string) (*os.File, error) {
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
+func openFile(filePath string) (*os.File, error) {
+	f, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file for reading")
@@ -67,7 +84,18 @@ func closeFile(f *os.File) error {
 }
 
 
-func addTask(desc, filepath string) error {
+func readCsv(f *os.File) ([][]string, error) {
+	reader := csv.NewReader(f)
+	return reader.ReadAll()
+}
+
+
+func addTask(description string, data [][]string) error {
 	
 	return nil
+}
+
+
+func getNewId(data [][]string) int {
+	return 1
 }
