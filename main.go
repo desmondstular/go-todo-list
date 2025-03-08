@@ -42,6 +42,11 @@ func main() {
 		panic(err)
 	}
 
+	// Parse data rows into todo structs
+	s := parseData(data)
+	
+	fmt.Println(s[0].id)
+
 	switch args[0] {
 	case "add":
 		fmt.Println(args[0])
@@ -96,6 +101,16 @@ func readCsv(f *os.File) ([][]string, error) {
 	return reader.ReadAll()
 }
 
+func parseData(data [][]string) []todo {
+	var s []todo = make([]todo, 0, 3)
+
+	for _, row := range data[1:] {
+		s = append(s, todo{row[0], row[1], row[2], row[3]})
+	}
+
+	return s
+}
+
 
 func addTask(description string, data [][]string) error {
 	
@@ -103,6 +118,7 @@ func addTask(description string, data [][]string) error {
 }
 
 
-func getNewId(data [][]string) int {
+func getNewId(s []todo) int {
+	
 	return 1
 }
