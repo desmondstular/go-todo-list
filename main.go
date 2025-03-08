@@ -4,7 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
-	// "strconv"
+	"strconv"
 	"syscall"
 )
 
@@ -44,8 +44,6 @@ func main() {
 
 	// Parse data rows into todo structs
 	s := parseData(data)
-	
-	fmt.Println(s[0].id)
 
 	switch args[0] {
 	case "add":
@@ -119,6 +117,16 @@ func addTask(description string, data [][]string) error {
 
 
 func getNewId(s []todo) int {
-	
-	return 1
+	// Find current max ID
+	var max int = 0
+
+	for _, i := range s {
+		temp, e := strconv.Atoi(i.id)
+
+		if e == nil && temp > max {
+			max = temp
+		}
+	}
+
+	return max+1
 }
