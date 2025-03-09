@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/mergestat/timediff"
 	"strconv"
 	"time"
 )
@@ -24,7 +25,7 @@ func (t Todo) ToSlice() []string {
 }
 
 func (t Todo) FormatString() string {
-	timeStr := t.CreatedAt.Format("2006-01-02 15:04:05.999999 -0700 MST")
+	timeStr := timediff.TimeDiff(t.CreatedAt)
 	boolStr := strconv.FormatBool(t.IsComplete)
 	return fmt.Sprintf("%v\t%v\t%v\t%v", t.Id, t.Description, timeStr, boolStr)
 }
