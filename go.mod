@@ -1,3 +1,3 @@
-module go-todo-list
+module todoapp
 
 go 1.24.0
