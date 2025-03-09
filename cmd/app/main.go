@@ -44,7 +44,8 @@ func main() {
 		cmd.AddTodo(args, s, f)
 		
 	case "list":
-		fmt.Println(args[0])
+		cmd.DisplayTodos(s)
+		
 	case "complete":
 		fmt.Println(args[0])
 	case "delete":

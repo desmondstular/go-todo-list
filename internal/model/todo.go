@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -20,4 +21,10 @@ func (t Todo) ToSlice() []string {
 	sl[2] = timeStr
 	sl[3] = strconv.FormatBool(t.IsComplete)
 	return sl
+}
+
+func (t Todo) FormatString() string {
+	timeStr := t.CreatedAt.Format("2006-01-02 15:04:05.999999 -0700 MST")
+	boolStr := strconv.FormatBool(t.IsComplete)
+	return fmt.Sprintf("%v\t%v\t%v\t%v", t.Id, t.Description, timeStr, boolStr)
 }
