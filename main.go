@@ -16,6 +16,16 @@ type Todo struct {
 	IsComplete bool
 }
 
+func (t Todo) ToSlice() []string {
+	sl := make([]string, 4)
+	timeStr := t.CreatedAt.Format("2006-01-02 15:04:05.999999 -0700 MST")
+	sl[0] = t.Id
+	sl[1] = t.Description
+	sl[2] = timeStr
+	sl[3] = strconv.FormatBool(t.IsComplete)
+	return sl
+}
+
 func main() {
 	// Default task file path
 	var filePath string = "./list.csv"
@@ -49,12 +59,11 @@ func main() {
 
 	switch args[0] {
 	case "add":
-		fmt.Println(args[0])
-
 		if len(args) < 2 {
 			panic("no description was passed")
 		}
-		addTask(args[1], s)
+		var td Todo = createTask(args[1], s)
+		addTask(f, td)
 	case "list":
 		fmt.Println(args[0])
 	case "complete":
@@ -102,6 +111,13 @@ func readCsv(f *os.File) ([][]string, error) {
 	return reader.ReadAll()
 }
 
+func addTask(f *os.File, td Todo) {
+	w := csv.NewWriter(f)
+	tdsl := td.ToSlice()
+	w.Write(tdsl)
+	w.Flush()
+}
+
 func parseData(data [][]string) []Todo {
 	var s []Todo = make([]Todo, 0, 3)
 
@@ -120,11 +136,11 @@ func parseData(data [][]string) []Todo {
 	return s
 }
 
-func addTask(description string, list []Todo) {
+func createTask(description string, list []Todo) Todo {
 	var id string = getNewId(list)
 	now := time.Now()
 	newTd := Todo{id, description, now, false}
-	fmt.Println(newTd)
+	return newTd
 }
 
 func getNewId(s []Todo) string {
