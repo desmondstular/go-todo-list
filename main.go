@@ -6,13 +6,14 @@ import (
 	"os"
 	"strconv"
 	"syscall"
+	"time"
 )
 
-type todo struct {
-	id string
-	description string
-	createdAt string
-	isComplete string
+type Todo struct {
+	Id string
+	Description string
+	CreatedAt time.Time
+	IsComplete bool
 }
 
 func main() {
@@ -42,15 +43,18 @@ func main() {
 		panic(err)
 	}
 
-	// Parse data rows into todo structs
+	// Parse data rows into Todo structs
 	s := parseData(data)
+	
 
 	switch args[0] {
 	case "add":
 		fmt.Println(args[0])
-		if err := addTask("test", data); err != nil {
-			panic(err)
+
+		if len(args) < 2 {
+			panic("no description was passed")
 		}
+		addTask(args[1], s)
 	case "list":
 		fmt.Println(args[0])
 	case "complete":
@@ -93,40 +97,47 @@ func closeFile(f *os.File) error {
 	return f.Close()
 }
 
-
 func readCsv(f *os.File) ([][]string, error) {
 	reader := csv.NewReader(f)
 	return reader.ReadAll()
 }
 
-func parseData(data [][]string) []todo {
-	var s []todo = make([]todo, 0, 3)
+func parseData(data [][]string) []Todo {
+	var s []Todo = make([]Todo, 0, 3)
 
 	for _, row := range data[1:] {
-		s = append(s, todo{row[0], row[1], row[2], row[3]})
+		if timeStr, err := time.Parse("2006-01-02 15:04:05.999999 -0700 MST", row[2]); err != nil {
+			panic(err)
+		} else {
+			if comp, err := strconv.ParseBool(row[3]); err != nil {
+				panic(err)
+			} else {
+				s = append(s, Todo{row[0], row[1], timeStr, comp})
+			}
+		}
 	}
 
 	return s
 }
 
-
-func addTask(description string, data [][]string) error {
-	
-	return nil
+func addTask(description string, list []Todo) {
+	var id string = getNewId(list)
+	now := time.Now()
+	newTd := Todo{id, description, now, false}
+	fmt.Println(newTd)
 }
 
-
-func getNewId(s []todo) int {
-	// Find current max ID
+func getNewId(s []Todo) string {
+	// Find current max Id
 	var max int = 0
 
 	for _, i := range s {
-		temp, e := strconv.Atoi(i.id)
+		temp, e := strconv.Atoi(i.Id)
 
 		if e == nil && temp > max {
 			max = temp
 		}
 	}
 
-	return max+1
+	return strconv.Itoa(max+1)
 }
