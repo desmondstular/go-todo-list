@@ -2,24 +2,37 @@ package cmd
 
 import (
 	"encoding/csv"
-	"os"
+	"io"
 	"strconv"
 	"time"
 	"todoapp/internal/model"
+	"todoapp/internal/utils"
 )
 
 
-func AddTodo(args []string, sl []model.Todo, f *os.File) {
+func AddTodo(args []string, sl []model.Todo, filePath string) {
 	if len(args) > 1 {
 		var td model.Todo = CreateTask(args[1], sl)
-		AddTaskToCsv(f, td)
+		AddTaskToCsv(td, filePath)
 	} else {
 		panic("no description was passed")
 	}
 }
 
 
-func AddTaskToCsv(f *os.File, td model.Todo) {
+func AddTaskToCsv(td model.Todo, filePath string) {
+	// Try to read file and check if error reading
+	f, err := utils.OpenFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+
+	defer utils.CloseFile(f)
+
+	// Seek to end
+	f.Seek(0, io.SeekEnd)
+
+	// Write to file
 	w := csv.NewWriter(f)
 	sl := td.ToSlice()
 	w.Write(sl)

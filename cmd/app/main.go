@@ -25,9 +25,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
-	// Defer file close
-	defer utils.CloseFile(f)
 
 	// Read data from csv
 	data, err := utils.ReadCsv(f)
@@ -35,13 +32,15 @@ func main() {
 		panic(err)
 	}
 
+	// Close file
+	utils.CloseFile(f)
+
 	// Parse data rows into model.Todo structs
 	var s []model.Todo = utils.ParseData(data)
-	
 
 	switch args[0] {
 	case "add":
-		cmd.AddTodo(args, s, f)
+		cmd.AddTodo(args, s, filePath)
 		
 	case "list":
 		cmd.DisplayTodos(s)
@@ -49,7 +48,7 @@ func main() {
 	case "complete":
 		fmt.Println(args[0])
 	case "delete":
-		fmt.Println(args[0])
+		cmd.Delete(args, s, filePath)
 	default:
 		fmt.Println("Not a valid command:", args[0])
 	}

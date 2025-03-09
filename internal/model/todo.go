@@ -29,3 +29,7 @@ func (t Todo) FormatString() string {
 	boolStr := strconv.FormatBool(t.IsComplete)
 	return fmt.Sprintf("%v\t%v\t%v\t%v", t.Id, t.Description, timeStr, boolStr)
 }
+
+func Header() []string {
+	return []string {"Id", "Description", "CreatedAt", "Done"}
+}
