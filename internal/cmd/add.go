@@ -1,4 +1,4 @@
-package utils
+package cmd
 
 import (
 	"encoding/csv"
@@ -9,7 +9,17 @@ import (
 )
 
 
-func AddTask(f *os.File, td model.Todo) {
+func AddTodo(args []string, sl []model.Todo, f *os.File) {
+	if len(args) > 1 {
+		var td model.Todo = CreateTask(args[1], sl)
+		AddTaskToCsv(f, td)
+	} else {
+		panic("no description was passed")
+	}
+}
+
+
+func AddTaskToCsv(f *os.File, td model.Todo) {
 	w := csv.NewWriter(f)
 	sl := td.ToSlice()
 	w.Write(sl)

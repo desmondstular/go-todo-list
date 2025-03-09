@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"todoapp/internal/cmd"
 	"todoapp/internal/model"
 	"todoapp/internal/utils"
 )
@@ -35,16 +36,13 @@ func main() {
 	}
 
 	// Parse data rows into model.Todo structs
-	s := utils.ParseData(data)
+	var s []model.Todo = utils.ParseData(data)
 	
 
 	switch args[0] {
 	case "add":
-		if len(args) < 2 {
-			panic("no description was passed")
-		}
-		var td model.Todo = utils.CreateTask(args[1], s)
-		utils.AddTask(f, td)
+		cmd.AddTodo(args, s, f)
+		
 	case "list":
 		fmt.Println(args[0])
 	case "complete":
