@@ -33,3 +33,7 @@ func (t Todo) FormatString() string {
 func Header() []string {
 	return []string {"Id", "Description", "CreatedAt", "Done"}
 }
+
+func HeaderString() string {
+	return fmt.Sprintf("ID,Description,CreatedAt,Done\n")
+}

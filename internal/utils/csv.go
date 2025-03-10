@@ -5,13 +5,26 @@ import (
 	"fmt"
 	"os"
 	"syscall"
+	"todoapp/internal/model"
 )
 
 func OpenFile(filePath string) (*os.File, error) {
-	f, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
-	
+	var f *os.File
+
+	_, err := os.Stat(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file for reading")
+		f, err = os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open file for reading")
+		}
+		if _, err := f.WriteString(model.HeaderString()); err != nil {
+			return nil, fmt.Errorf("could not header to new list csv")
+		}
+	} else {
+		f, err = os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open file for reading")
+		}
 	}
 
 	// Exclusive lock obtained on file descriptor
