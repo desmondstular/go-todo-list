@@ -46,9 +46,11 @@ func main() {
 		cmd.DisplayTodos(s)
 		
 	case "complete":
-		fmt.Println(args[0])
+		cmd.Complete(args, s, filePath)
+
 	case "delete":
 		cmd.Delete(args, s, filePath)
+
 	default:
 		fmt.Println("Not a valid command:", args[0])
 	}
