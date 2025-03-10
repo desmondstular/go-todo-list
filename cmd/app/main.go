@@ -17,27 +17,31 @@ func main() {
 
 	// Check if no args passed
 	if err := hasNoArgs(args); err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	// Try to read file and check if error reading
 	f, err := utils.OpenFile(filePath)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	// Read data from csv
 	data, err := utils.ReadCsv(f)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	// Close file
 	utils.CloseFile(f)
 
-	// Parse data rows into model.Todo structs
+	// Parse data rows into todo models
 	var s []model.Todo = utils.ParseData(data)
 
+	// Run command that user input
 	switch args[0] {
 	case "add":
 		cmd.AddTodo(args, s, filePath)
